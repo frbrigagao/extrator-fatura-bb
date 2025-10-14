@@ -1,10 +1,10 @@
 const CACHE_NAME = 'extrator-fatura-bb-cache-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icons/icon-192x192.svg',
-  '/icons/icon-512x512.svg'
+  './',
+  'index.html',
+  'manifest.json',
+  'icons/icon-192x192.svg',
+  'icons/icon-512x512.svg'
 ];
 
 self.addEventListener('install', event => {
