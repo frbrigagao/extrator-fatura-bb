@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#3b82f6">
     <meta name="description" content="Converta suas faturas de cartão de crédito do Banco do Brasil em formato PDF para OFX e CSV">
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkV4dHJhdG9yIGRlIEZhdHVyYSBQREYiLAogICJzaG9ydF9uYW1lIjogIkV4dHJhdG9yIFBERiIsCiAgImRlc2NyaXB0aW9uIjogIkNvbnZlcnRhIGZhdHVyYXMgZGUgY2FydMOjbyBlbSBPRlggZSBDU1YiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiI2Y1ZjdmYSIsCiAgInRoZW1lX2NvbG9yIjogIiMzYjgyZjYiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LFBITjJaeUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TUM5emRtY2lJSGRwWkhSb1BTSXhPVElpSUdobGFXZG9kRDBpTVRreUlqNDhjbVZqZENCM2FXUjBhRDBpTVRreUlpQm9aV2xuYUhROUlqRTVNaUlnWm1sc2JEMGlJek0wTXpnMU1DSXZQangwWlhoMElIZzlJalEySWlCNVBTSTVOaUlnWm1sc2JEMGlJM2RvYVhSbElpQm1iMjUwTFhOcGVtVTlJalEwSWlCbWIyNTBMWGRsYVdkb2REMGlZbTlzWkNJK1BEdDhQQzkwWlhoMFBqd3ZjM1puUGc9PSIsCiAgICAgICJzaXplcyI6ICIxOTJ4MTkyIiwKICAgICAgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIKICAgIH0sCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M015NXZjbWN2TWpBd01DOXpkbWNpSUhkcFpIUm9QU0kxTVRJaUlHaGxhV2RvZEQwaU5URXlJajQ4Y21WamRDQjNhV1IwYUQwaU5URXlJaUJvWldsbmFIUTlJalV4TWlJZ1ptbHNiRDBpSXpNME16ZzFNQ0l2UGp4MFpYaDBJSGc5SWpFeU9DSWdlVDBpTWpVMklpQm1hV3hzUFNJamQyaHBkR1VpSUdadmJuUXRjMmw2WlQwaU5qUWlJR1p2Ym5RdGQyVnBaMmgwUFNKaWIyeGtJajQ4UHp3OEwzUmxlSFErUEM5emRtYytQZz09IiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQ==">
-    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIj48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgZmlsbD0iIzM0Mzg1MCIvPjx0ZXh0IHg9IjQ2IiB5PSI5NiIgZmlsbD0iI3doaXRlIiBmb250LXNpemU9IjQ0IiBmb250LXdlaWdodD0iYm9sZCI+8J+TizwvdGV4dD48L3N2Zz4=">
+    <link rel="manifest" href="/manifest.json">
+
     <title>Extrator de Transações de Fatura de Cartão de Cŕedito do Banco do Brasil</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <style>
@@ -1348,6 +1348,17 @@
             document.body.removeChild(a);
             URL.revokeObjectURL(a.href);
             alert('Arquivo CSV salvo com sucesso.');
+        }
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(registration => {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
         }
     </script>
 </body>
