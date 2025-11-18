@@ -8,6 +8,11 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
 
     <!-- Vue 3 -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -35,6 +40,14 @@
             background-color: #eff6ff;
         }
 
+        /* Dark mode drag active */
+        .dark .drag-active {
+            background-color: #1e3a8a;
+            /* blue-900 */
+            border-color: #60a5fa;
+            /* blue-400 */
+        }
+
         .table-input {
             background: transparent;
             width: 100%;
@@ -51,8 +64,20 @@
             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
         }
 
+        .dark .table-input:focus {
+            background: #1f2937;
+            /* gray-800 */
+            border-color: #3b82f6;
+            color: #f3f4f6;
+        }
+
         .table-input:hover {
             background: #f8fafc;
+        }
+
+        .dark .table-input:hover {
+            background: #374151;
+            /* gray-700 */
         }
 
         /* Toggle Switch Style */
@@ -86,41 +111,50 @@
     </style>
 </head>
 
-<body class="bg-gray-50 text-gray-800 font-sans min-h-screen">
+<body
+    class="bg-gray-50 text-gray-800 font-sans min-h-screen transition-colors duration-300 dark:bg-gray-900 dark:text-gray-100">
 
     <div id="app" class="container mx-auto px-4 py-8 max-w-5xl">
 
         <!-- Header -->
-        <header class="mb-8 text-center">
-            <h1 class="text-3xl font-bold text-blue-900 mb-2 flex justify-center items-center gap-2">
+        <header class="mb-8 text-center relative">
+            <!-- Dark Mode Toggle (Absolute Top Right) -->
+            <button @click="toggleDarkMode"
+                class="absolute top-0 right-0 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                :title="isDarkMode ? 'Mudar para modo claro' : 'Mudar para modo escuro'">
+                <span v-html="darkModeIcon"></span>
+            </button>
+
+            <h1 class="text-3xl font-bold text-blue-900 dark:text-blue-400 mb-2 flex justify-center items-center gap-2">
                 <i data-lucide="file-spreadsheet" class="w-8 h-8"></i>
                 Conversor de Fatura BB
             </h1>
-            <p class="text-gray-600">
+            <p class="text-gray-600 dark:text-gray-400">
                 Transforme o PDF da sua fatura do Banco do Brasil em uma tabela editável e baixe em CSV.
                 <br>
                 <span
-                    class="text-xs text-green-600 font-semibold bg-green-100 px-2 py-1 rounded-full mt-2 inline-block">
+                    class="text-xs text-green-600 dark:text-green-400 font-semibold bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded-full mt-2 inline-block">
                     🔒 100% Local - Seus dados não são enviados para nenhum servidor.
                 </span>
             </p>
         </header>
 
         <!-- Upload Area -->
-        <div class="border-2 border-dashed border-gray-300 rounded-xl p-10 text-center cursor-pointer transition-all duration-300 bg-white shadow-sm hover:shadow-md mb-8"
+        <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-10 text-center cursor-pointer transition-all duration-300 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md mb-8"
             :class="{ 'drag-active': isDragging }" @dragover.prevent="isDragging = true"
             @dragleave.prevent="isDragging = false" @drop.prevent="handleDrop" @click="triggerFileInput">
             <input type="file" ref="fileInput" class="hidden" accept="application/pdf" @change="handleFileSelect">
 
             <div v-if="!isProcessing">
                 <i data-lucide="upload-cloud" class="w-12 h-12 mx-auto text-blue-400 mb-4"></i>
-                <h3 class="text-lg font-semibold text-gray-700">Arraste sua fatura PDF aqui</h3>
-                <p class="text-sm text-gray-500 mt-2">Ou clique para selecionar o arquivo</p>
+                <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-200">Arraste sua fatura PDF aqui</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Ou clique para selecionar o arquivo</p>
             </div>
 
             <div v-else class="flex flex-col items-center justify-center">
-                <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mb-4"></div>
-                <p class="text-blue-600 font-medium">Lendo PDF e extraindo lançamentos...</p>
+                <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 dark:border-blue-400 mb-4">
+                </div>
+                <p class="text-blue-600 dark:text-blue-400 font-medium">Lendo PDF e extraindo lançamentos...</p>
                 <p class="text-xs text-gray-400 mt-2">Processando página {{ progress.current }} de {{ progress.total }}
                 </p>
             </div>
@@ -128,40 +162,42 @@
 
         <!-- Error Message -->
         <div v-if="errorMessage"
-            class="bg-red-50 border-l-4 border-red-500 p-4 mb-8 rounded shadow-sm flex items-start gap-3">
+            class="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 mb-8 rounded shadow-sm flex items-start gap-3">
             <i data-lucide="alert-circle" class="text-red-500 w-5 h-5 mt-0.5"></i>
             <div>
-                <p class="font-bold text-red-700">Erro</p>
-                <p class="text-red-600">{{ errorMessage }}</p>
+                <p class="font-bold text-red-700 dark:text-red-400">Erro</p>
+                <p class="text-red-600 dark:text-red-300">{{ errorMessage }}</p>
             </div>
-            <button @click="errorMessage = null" class="ml-auto text-red-400 hover:text-red-700">✕</button>
+            <button @click="errorMessage = null"
+                class="ml-auto text-red-400 hover:text-red-700 dark:hover:text-red-300">✕</button>
         </div>
 
         <!-- Editor Section -->
         <transition name="fade">
             <div v-if="transactions.length > 0"
-                class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+                class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
 
                 <!-- Toolbar -->
-                <div class="p-4 bg-gray-50 border-b border-gray-200 flex flex-wrap justify-between items-center gap-4">
+                <div
+                    class="p-4 bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-700 flex flex-wrap justify-between items-center gap-4">
 
                     <!-- Stats & Toggle -->
                     <div class="flex items-center gap-6">
                         <div class="flex items-center gap-2">
-                            <span class="font-bold text-gray-700">{{ transactions.length }}</span>
-                            <span class="text-gray-500 text-sm">lançamentos</span>
+                            <span class="font-bold text-gray-700 dark:text-gray-200">{{ transactions.length }}</span>
+                            <span class="text-gray-500 dark:text-gray-400 text-sm">lançamentos</span>
                         </div>
 
                         <!-- Toggle Switch -->
-                        <div class="flex items-center gap-2 border-l pl-6 border-gray-300">
-                            <span class="text-sm font-medium text-gray-600">Inverter Sinais</span>
+                        <div class="flex items-center gap-2 border-l pl-6 border-gray-300 dark:border-gray-600">
+                            <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Inverter Sinais</span>
                             <div
                                 class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
                                 <input type="checkbox" name="toggle" id="toggle" v-model="isInverted"
                                     @change="handleInvertToggle"
                                     class="toggle-checkbox absolute block rounded-full bg-white border-4 appearance-none cursor-pointer" />
                                 <label for="toggle"
-                                    class="toggle-label block overflow-hidden rounded-full bg-gray-300 cursor-pointer transition-colors duration-200 ease-in-out"></label>
+                                    class="toggle-label block overflow-hidden rounded-full bg-gray-300 dark:bg-gray-600 cursor-pointer transition-colors duration-200 ease-in-out"></label>
                             </div>
                         </div>
                     </div>
@@ -169,7 +205,7 @@
                     <!-- Actions -->
                     <div class="flex gap-2">
                         <button @click="addTransaction"
-                            class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium shadow-sm">
+                            class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors text-sm font-medium shadow-sm">
                             <i data-lucide="plus" class="w-4 h-4"></i> <span class="hidden sm:inline">Adicionar</span>
                         </button>
                         <button @click="downloadCSV"
@@ -188,7 +224,8 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-gray-100 text-gray-600 text-xs uppercase tracking-wider">
+                            <tr
+                                class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs uppercase tracking-wider">
                                 <th class="p-4 font-semibold w-32">Data</th>
                                 <th class="p-4 font-semibold">Descrição</th>
                                 <th class="p-4 font-semibold w-20 text-center">Moeda</th>
@@ -196,27 +233,30 @@
                                 <th class="p-4 w-16 text-center">Ações</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-100">
+                        <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
                             <tr v-for="(item, index) in transactions" :key="index"
-                                class="hover:bg-blue-50 group transition-colors">
+                                class="hover:bg-blue-50 dark:hover:bg-gray-700/50 group transition-colors">
                                 <td class="p-2">
                                     <input type="text" v-model="item.date"
-                                        class="table-input text-gray-600 font-mono text-sm" placeholder="DD/MM">
+                                        class="table-input text-gray-600 dark:text-gray-300 font-mono text-sm"
+                                        placeholder="DD/MM">
                                 </td>
                                 <td class="p-2">
                                     <input type="text" v-model="item.description"
-                                        class="table-input font-medium text-gray-800" placeholder="Descrição da compra">
+                                        class="table-input font-medium text-gray-800 dark:text-gray-100"
+                                        placeholder="Descrição da compra">
                                 </td>
                                 <!-- Coluna Moeda Separada -->
                                 <td class="p-2 text-center">
                                     <input type="text" v-model="item.currency"
-                                        class="table-input text-center text-gray-500 text-sm w-full" readonly>
+                                        class="table-input text-center text-gray-500 dark:text-gray-400 text-sm w-full"
+                                        readonly>
                                 </td>
                                 <!-- Coluna Valor (sem R$) -->
                                 <td class="p-2 text-right">
                                     <input type="text" v-model="item.value"
                                         class="table-input text-right font-mono text-sm"
-                                        :class="item.value.includes('-') ? 'text-green-600' : 'text-gray-800'"
+                                        :class="item.value.includes('-') ? 'text-green-600 dark:text-green-400' : 'text-gray-800 dark:text-gray-100'"
                                         placeholder="0,00">
                                 </td>
                                 <td class="p-2 text-center">
@@ -228,11 +268,13 @@
                                 </td>
                             </tr>
                         </tbody>
-                        <tfoot class="bg-gray-50">
+                        <tfoot class="bg-gray-50 dark:bg-gray-900/50">
                             <tr>
-                                <td colspan="3" class="p-4 text-right font-bold text-gray-600">Total Calculado (Aprox.):
+                                <td colspan="3" class="p-4 text-right font-bold text-gray-600 dark:text-gray-400">Total
+                                    Calculado (Aprox.):
                                 </td>
-                                <td class="p-4 text-right font-bold text-blue-900 font-mono">{{ calculatedTotal }}</td>
+                                <td class="p-4 text-right font-bold text-blue-900 dark:text-blue-400 font-mono">{{
+                                    calculatedTotal }}</td>
                                 <td></td>
                             </tr>
                         </tfoot>
@@ -251,7 +293,7 @@
     </div>
 
     <script>
-        const { createApp, ref, computed, nextTick } = Vue;
+        const { createApp, ref, computed, nextTick, onMounted, watch } = Vue;
 
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
@@ -264,6 +306,50 @@
                 const errorMessage = ref(null);
                 const progress = ref({ current: 0, total: 0 });
                 const isInverted = ref(false);
+                const isDarkMode = ref(false);
+
+                // --- Dark Mode ---
+
+                const toggleDarkMode = () => {
+                    isDarkMode.value = !isDarkMode.value;
+                    updateTheme();
+                };
+
+                const updateTheme = () => {
+                    if (isDarkMode.value) {
+                        document.documentElement.classList.add('dark');
+                        localStorage.setItem('theme', 'dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                        localStorage.setItem('theme', 'light');
+                    }
+                    // Re-render icons because color classes might have changed
+                    nextTick(() => lucide.createIcons());
+                };
+
+                const darkModeIcon = computed(() => {
+                    if (isDarkMode.value) {
+                        // Sun icon SVG
+                        return '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-yellow-400"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>';
+                    } else {
+                        // Moon icon SVG
+                        return '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-gray-600"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+                    }
+                });
+
+                // Initialize theme
+                onMounted(() => {
+                    const savedTheme = localStorage.getItem('theme');
+                    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+                    if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+                        isDarkMode.value = true;
+                    } else {
+                        isDarkMode.value = false;
+                    }
+                    updateTheme();
+                    lucide.createIcons();
+                });
 
                 // --- Utils ---
 
@@ -482,11 +568,7 @@
                     document.body.removeChild(link);
                 };
 
-                Vue.onMounted(() => {
-                    lucide.createIcons();
-                });
-
-                Vue.watch(transactions, () => {
+                watch(transactions, () => {
                     nextTick(() => lucide.createIcons());
                 }, { deep: true });
 
@@ -506,7 +588,10 @@
                     reset,
                     progress,
                     isInverted,
-                    handleInvertToggle
+                    handleInvertToggle,
+                    isDarkMode,
+                    toggleDarkMode,
+                    darkModeIcon
                 };
             }
         }).mount('#app');
