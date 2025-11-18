@@ -1,35 +1,71 @@
-# Extrator de Fatura de Cartão de Crédito do Banco do Brasil
+# Conversor de Fatura BB para CSV
 
-Esta é uma ferramenta web para extrair transações de faturas de cartão de crédito do Banco do Brasil em formato PDF e convertê-las para os formatos OFX (Open Financial Exchange) e CSV (Comma-Separated Values).
+![100% Local](https://img.shields.io/badge/Processamento-100%25%20Local-green)
+![Sem Backend](https://img.shields.io/badge/Backend-N%C3%A3o%20Requerido-blue)
+![PWA Ready](https://img.shields.io/badge/PWA-Ready-purple)
+
+Aplicação web que converte faturas do Banco do Brasil (Ourocard) em PDF para CSV editáveis, com processamento 100% local e seguro.
+
+## Utilização
+
+**Acesse:** [https://frbrigagao.github.io/extrator-fatura-bb/](https://frbrigagao.github.io/extrator-fatura-bb/)
 
 ## Funcionalidades
 
-- **Conversão de PDF para OFX e CSV:** Converta suas faturas de cartão de crédito do Banco do Brasil de forma rápida e fácil.
-- **Processamento Local:** Todo o processamento é feito no seu navegador. Nenhum dado da sua fatura é enviado para servidores externos, garantindo total privacidade.
-- **Visualização e Edição:** Visualize as transações extraídas em uma tabela e edite a data e a descrição conforme necessário.
-- **Seleção de Transações:** Escolha quais transações você deseja exportar.
-- **Filtragem e Ordenação:** Filtre transações por descrição e valor, e ordene por data, valor ou descrição.
-- **Exportação Flexível:**
-  - Copie o conteúdo OFX para a área de transferência.
-  - Salve as transações como um arquivo `.ofx`.
-  - Salve as transações como um arquivo `.csv`.
-- **Modo Escuro:** Alterne entre os modos claro e escuro para uma melhor experiência de visualização.
-- **Progressive Web App (PWA):** Instale a aplicação no seu dispositivo (desktop ou móvel) para acesso rápido e offline.
+- **Upload Simples**: Arraste e solte ou clique para selecionar o arquivo PDF
+- **Extraçãoo Automática**: Identifica automaticamente os lançamentos da fatura
+- **Editor Interativo**: Edite, adicione ou remova transações diretamente na tabela
+- **Inversão de Sinais**: Toggle para inverter débitos/créditos conforme necessário
+- **Exportação CSV**: Baixe os dados em formato CSV compatível com Excel e Google Sheets
+- **Cálculo Automático**: Visualize o total calculado em tempo real
+- **100% Privado**: Seus dados permanecem no seu navegador, nada é enviado para servidores
+
+## Segurança e Privacidade
+
+Esta aplicação funciona **inteiramente no seu navegador**. Nenhum dado é enviado para servidores externos:
+
+-  Processamento local usando JavaScript
+-  Sem conexões de rede para processar PDFs
+-  Seus dados financeiros permanecem privados
+-  Funciona offline após o primeiro carregamento
 
 ## Como Usar
 
-1.  Acesse a página da aplicação.
-2.  Clique na área de upload ou arraste e solte um arquivo PDF da sua fatura do Banco do Brasil.
-3.  Aguarde o processamento do arquivo.
-4.  Visualize e edite as transações na tabela, se necessário.
-5.  Use os botões para copiar ou salvar os dados nos formatos OFX ou CSV.
+1. **Abra a aplicação** no seu navegador
+2. **Faça upload** do PDF da sua fatura do Banco do Brasil
+3. **Aguarde** o processamento automático (alguns segundos)
+4. **Edite** os dados conforme necessário na tabela interativa
+5. **Inverta sinais** se necessário usando o toggle "Inverter Sinais"
+6. **Baixe o CSV** clicando no botão "Baixar CSV"
 
-## Privacidade
+## Requisitos
 
-Esta ferramenta foi construída com a sua privacidade em mente. **Nenhum dado do seu arquivo PDF é enviado para fora do seu navegador.** 
+- Navegador moderno (Chrome, Firefox, Safari, Edge)
+- Arquivo PDF da fatura do Banco do Brasil (Ourocard)
+- Conexão com internet apenas para carregar a aplicação (processamento 100% local)
 
-Todo o processo de leitura e conversão do arquivo acontece localmente no seu dispositivo.
+## Formato de Extração
 
-## Aviso
+A aplicação identifica lançamentos no seguinte padrão:
 
-Este é um projeto não oficial e não possui qualquer vínculo com o Banco do Brasil.
+```
+DD/MM Descrição da Compra R$ Valor
+```
+
+**Exemplo:**
+```
+15/01 PAGAMENTO PIX R$ 150,00-
+20/01 COMPRA SUPERMERCADO R$ 250,50
+```
+
+### Colunas do CSV Gerado
+
+| Data | Descrição | Moeda | Valor |
+|------|-----------|-------|-------|
+| DD/MM | Descrição da transação | R$ | Valor numérico |
+
+## Limitações Conhecidas
+
+- Compatível apenas com faturas do Banco do Brasil (Ourocard)
+- PDFs com senha não são suportados
+- Não foi testada com lançamentos em moeda estrangeira
