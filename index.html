@@ -256,7 +256,7 @@
                                 <td class="p-2 text-right">
                                     <input type="text" v-model="item.value"
                                         class="table-input text-right font-mono text-sm"
-                                        :class="item.value.includes('-') ? 'text-green-600 dark:text-green-400' : 'text-gray-800 dark:text-gray-100'"
+                                        :class="item.type === 'credit' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'"
                                         placeholder="0,00">
                                 </td>
                                 <td class="p-2 text-center">
@@ -510,11 +510,15 @@
                             // Ex: "R$ 100,00-" vira "100,00-"
                             let cleanValue = rawValue.replace('R$', '').trim();
 
+                            // Detecta se é crédito (negativo) ou débito (positivo) pelo sinal original
+                            const isCredit = cleanValue.includes('-');
+
                             transactions.value.push({
                                 date: match[1],
                                 description: description,
                                 currency: 'R$',
-                                value: cleanValue
+                                value: cleanValue,
+                                type: isCredit ? 'credit' : 'debit'
                             });
                         }
                     });
@@ -523,7 +527,7 @@
                 // --- Manipulação de Dados UI ---
 
                 const addTransaction = () => {
-                    transactions.value.unshift({ date: '', description: '', currency: 'R$', value: '' });
+                    transactions.value.unshift({ date: '', description: '', currency: 'R$', value: '', type: 'debit' });
                 };
 
                 const removeTransaction = (index) => {
